@@ -1,0 +1,154 @@
+{% extends "base.html" %}
+
+{% block title %}Saisie feuille de temps{% endblock %}
+
+{% block content %}
+
+<form method="post">
+    <table class="timesheet">
+
+        <!-- Header -->
+        <tr>
+            <th>Jours</th>
+            {% for d in range(1, 32) %}
+                <th>{{ d }}/1</th>
+            {% endfor %}
+        </tr>
+
+        <!-- Jours travaillés -->
+        <tr>
+            <td class="label">
+                Jours travaillés<br>
+                <small>Projet 1</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td>
+                    <input type="number"
+                           name="work_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures travaillées pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Absence 1 -->
+        <tr>
+            <td class="label">
+                Absence 1<br>
+                <small>Maladie, congés, autre</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td id="abs1_{{ d }}">
+                    <input type="number"
+                           name="absence1_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures d'absence pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Absence 2 -->
+        <tr>
+            <td class="label">
+                Absence 2<br>
+                <small>Maladie, congés, autre</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td id="abs2_{{ d }}">
+                    <input type="number"
+                           name="absence2_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures d'absence pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Total -->
+        <tr class="total-row">
+            <td class="label">Total</td>
+            {% for d in range(1, 32) %}
+                <td class="total-cell" id="total_{{ d }}">0</td>
+            {% endfor %}
+        </tr>
+
+    </table>
+
+    <!-- Commentaires -->
+    <div class="comments">
+        <label>Commentaires</label><br>
+        <textarea name="comments" rows="3" title="Enter your comments here" placeholder="Enter your comments..."></textarea>
+    </div>
+
+    <div class="actions">
+        <button type="submit">Soumettre</button>
+    </div>
+</form>
+
+<!-- <script>
+function calculateTotals() {
+    for (let day = 1; day <= 31; day++) {
+
+        // Get input elements for this day
+        const workInput = document.querySelector(`[name="work_${day}"]`);
+        const abs1Input = document.querySelector(`[name="absence1_${day}"]`);
+        const abs2Input = document.querySelector(`[name="absence2_${day}"]`);
+
+        const work = parseFloat(workInput.value) || 0;
+        const abs1 = parseFloat(abs1Input.value) || 0;
+        const abs2 = parseFloat(abs2Input.value) || 0;
+
+        // Calculate total
+        const totalCell = document.getElementById(`total_${day}`);
+        const total = work + abs1 + abs2;
+
+        // Update total cell
+        totalCell.innerText = total > 1 ? "❌" : total;
+        totalCell.title = total > 1 ? "⚠️ Total heures > 1!" : `Total: ${total}`;
+
+        // Highlight the total row if needed
+        const totalRow = totalCell.parentElement; // <tr> element
+        totalRow.style.backgroundColor = total > 1 ? "#f8d7da" : "";
+
+        // Function to color absence cells and add tooltip
+        function updateAbsenceCell(td, value) {
+            if (!td) return;
+            if (value === 1) {
+                td.style.backgroundColor = "#e74c3c"; // red
+                td.style.color = "white";
+                td.title = "Absent toute la journée";
+            } else if (value === 0.5) {
+                td.style.backgroundColor = "#f9e79f"; // yellow
+                td.style.color = "black";
+                td.title = "Absent une demi-journée";
+            } else {
+                td.style.backgroundColor = "white";
+                td.style.color = "black";
+                td.title = "Présent";
+            }
+        }
+
+        // Apply coloring and tooltips to Absence1 and Absence2
+        updateAbsenceCell(document.getElementById(`abs1_${day}`), abs1);
+        updateAbsenceCell(document.getElementById(`abs2_${day}`), abs2);
+    }
+}
+
+// Attach input event to all table inputs
+document.querySelectorAll("input").forEach(input => {
+    input.addEventListener("input", calculateTotals);
+});
+
+// Run once on page load in case there are pre-filled values
+calculateTotals();
+</script> -->
+<script src="{{ url_for('static', filename='jscript/script.js') }}"></script>
+{% endblock %}

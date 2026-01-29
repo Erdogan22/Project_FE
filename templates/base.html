@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Feuille de temps{% endblock %}</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <header>
+        <h1>Feuille de temps – Consultant</h1>
+        <p>Utilisateur : <strong>Mahmoud</strong> | Mois : <strong>Janvier 2026</strong></p>
+    </header>
+
+
+<!-- success message -->
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for message in messages %}
+        <div class="flash-success">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- hide success message after 3s -->
+<script>
+setTimeout(() => {
+    const flash = document.querySelector(".flash-success");
+    if (flash) flash.style.display = "none";
+}, 3000);
+</script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f6fa;
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background-color: #2c3e50;
+    color: white;
+    padding: 15px 30px;
+}
+
+header h1 {
+    margin: 0;
+}
+
+main {
+    padding: 30px;
+}
+
+.timesheet {
+    border-collapse: collapse;
+    width: 100%;
+    background: white;
+}
+
+.timesheet th,
+.timesheet td {
+    border: 1px solid #ccc;
+    padding: 5px;
+    text-align: center;
+}
+
+.timesheet th {
+    background-color: #f1c40f;
+    font-weight: bold;
+}
+
+.timesheet .label {
+    background-color: #ecf0f1;
+    font-weight: bold;
+}
+
+.timesheet input {
+    width: 50px;
+    text-align: center;
+}
+
+.actions {
+    margin-top: 20px;
+}
+
+button {
+    background-color: #27ae60;
+    color: white;
+    border: none;
+    padding: 10px 25px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #219150;
+}
+
+
+.total-row {
+    background-color: #e8f6ff;
+    font-weight: bold;
+}
+
+.total-cell {
+    color: #2c3e50;
+}
+
+.comments {
+    margin-top: 20px;
+}
+
+.comments textarea {
+    width: 100%;
+    resize: none;
+}
+
+
+/* message */
+.flash-container {
+    margin: 20px 30px;
+}
+
+.flash-success {
+    background-color: #eafaf1;
+    color: #1e8449;
+    border-left: 6px solid #2ecc71;
+    padding: 15px 20px;
+    border-radius: 4px;
+    font-size: 15px;
+    font-weight: 500;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+
+.timesheet td {
+    transition: background-color 0.3s, color 0.3s; /* smooth color change */
+    text-align: center;
+}
+
+.total-cell {
+    font-weight: bold;
+}
+
+.label {
+    font-weight: bold;
+}
+.total-row {
+    transition: background-color 0.3s;
+}

@@ -15,6 +15,8 @@ header h1 {
     margin: 0;
 }
 
+
+
 main {
     padding: 30px;
 }
@@ -24,7 +26,71 @@ main {
     width: 100%;
     background: white;
 }
+/* General table styling */
+table.timesheet {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-size: 14px;
+    text-align: center;
+}
 
+table.timesheet th,
+table.timesheet td {
+    border: 1px solid #ddd;
+    padding: 8px;
+}
+
+table.timesheet th {
+    background-color: #f4f4f4;
+    font-weight: bold;
+}
+
+table.timesheet .label {
+    text-align: left;
+    font-weight: bold;
+}
+
+/* Ensure the table scrolls horizontally on smaller screens */
+table.timesheet {
+    display: block;
+    overflow-x: auto;
+    white-space: nowrap;
+}
+
+/* Style for smaller screens */
+@media (max-width: 768px) {
+    table.timesheet {
+        font-size: 12px;
+    }
+
+    table.timesheet th,
+    table.timesheet td {
+        padding: 6px;
+    }
+
+    .comments textarea {
+        width: 100%;
+    }
+
+    .actions button {
+        width: 100%;
+        padding: 10px;
+    }
+}
+
+/* Style for very small screens */
+@media (max-width: 480px) {
+    table.timesheet th,
+    table.timesheet td {
+        font-size: 10px;
+        padding: 4px;
+    }
+
+    table.timesheet .label {
+        font-size: 12px;
+    }
+}
 .timesheet th,
 .timesheet td {
     border: 1px solid #ccc;
@@ -116,4 +182,34 @@ button:hover {
 }
 .total-row {
     transition: background-color 0.3s;
+}
+
+/* Navbar styling */
+.navbar {
+    background-color: #34495e;
+    padding: 10px 20px;
+}
+
+.navbar-menu {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: space-around;
+}
+
+.navbar-menu li {
+    display: inline;
+}
+
+.navbar-menu a {
+    color: white;
+    text-decoration: none;
+    padding: 8px 15px;
+    border-radius: 4px;
+    transition: background-color 0.3s;
+}
+
+.navbar-menu a:hover {
+    background-color: #2c3e50;
 }

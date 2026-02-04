@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container">
+    {% if current_user.profile_image %}
+    <img src=
+    "{{ url_for('static', filename='uploads/' + current_user.profile_image) }}" 
+    alt="Photo de profil" class="rounded-circle" 
+    width="80">
+    {% endif %}
+
+    <h3>Tableau de bord Administrateur</h3>
+
+    <div class="list-group mt-4">
+        <a href="/admin/create-user" class="list-group-item list-group-item-action">
+            ➕ Créer utilisateur
+        </a>
+        <a href="/admin/users" class="list-group-item list-group-item-action">
+            👥 Gérer utilisateurs
+        </a>
+    </div>
+</div>
+{% endblock %}

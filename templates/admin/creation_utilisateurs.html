@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Création d'un utilisateur{% endblock %}
+
+{% block content %}
+
+            <div class="container mt-5">
+                <h3>Créer un utilisateur</h3>
+                
+                <form method="POST" enctype="multipart/form-data">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    
+                    <input name="nom" class="form-control mb-2" placeholder="Nom" required >
+                    <input name="prenom" class="form-control mb-2" placeholder="Prénom" required>
+                    <input name="email" type="email" class="form-control mb-2" placeholder="Email" required>
+
+                    <input name="password" class="form-control mb-2"
+                        placeholder="Mot de passe provisoire" required>
+
+                    <select name="role" class="form-control mb-2">
+                        <option value="consultant">Consultant</option>
+                        <option value="manager">Manager</option>
+                    </select>
+
+                    <select name="manager_id" class="form-control mb-2">
+                        <option value="">Manager</option>
+                        {% for manager in managers %}
+                            <option value="{{ manager.id }}">{{ manager.nom }} {{ manager.prenom }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <select name="project_id" class="form-control mb-2">
+                        <option value="">Projet</option>
+                        {% for project in projects %}
+                            <option value="{{ project.id }}">{{ project.nom }}</option>
+                        {% endfor %}
+                    </select>
+
+                    <input name="profile_image" type="file" class="form-control mb-3">
+                    
+                    <button class="btn btn-primary">Créer</button>
+                </form>
+            </div>
+{% endblock %}
+

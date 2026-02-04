@@ -3,8 +3,24 @@
 {% block title %}Saisie feuille de temps{% endblock %}
 
 {% block content %}
+<!-- {%  block messages %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for message in messages %}
+        <div class="flash-success">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+{% endblock messages %} -->
 
+<h1>Saisie de la feuille de temps – Consultant</h1>
+<p>Utilisateur : <strong>Mahmoud</strong> | Mois : <strong>Janvier 2026</strong></p>
 <form method="post">
+    <div class ="table-container">
     <table class="timesheet">
 
         <!-- Header -->
@@ -81,7 +97,7 @@
         </tr>
 
     </table>
-
+</div>
     <!-- Commentaires -->
     <div class="comments">
         <label>Commentaires</label><br>

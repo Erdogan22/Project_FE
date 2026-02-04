@@ -106,7 +106,7 @@ app.register_blueprint(user_bp)
 
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/feuille-de-temps", methods=["GET", "POST"])
 def timesheet():
     if request.method == "POST":
 
@@ -128,9 +128,13 @@ def timesheet():
         db.session.commit()
         flash("✅ Feuille de temps enregistrée avec succès.")
 
-        return redirect("/")
+        return redirect("/feuille-de-temps")
 
     return render_template("timesheet.html")
+
+@app.route("/", methods=["GET"])
+def accueil():
+    return render_template("accueil.html")
 
 if __name__ == "__main__":
     with app.app_context():

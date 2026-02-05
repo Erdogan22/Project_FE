@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+
+{% block title %}Authentification{% endblock %}
+
+{% block content %}    
+
+<div class="d-flex justify-content-center align-items-center" style="height:80vh">
+    <div class="card shadow" style="width: 380px;">
+        <div class="card-body">
+            <h4 class="text-center mb-4">Connexion</h4>
+
+            <form method="POST" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+              
+                <div class="mb-3">
+                    <input type="email" name="email"
+                           class="form-control"
+                           placeholder="Adresse email" required>
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" name="password"
+                           class="form-control"
+                           placeholder="Mot de passe" required>
+                </div>
+
+                <button class="btn btn-primary w-100">
+                    Se connecter
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

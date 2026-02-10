@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <h4 class="mb-4">📊 Dashboard - {{ month }}</h4>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>🕒 Heures</h6>
+        <h3>{{ total_hours }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>❌ Absences</h6>
+        <h3>{{ absences }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>🏖 Vacances restantes</h6>
+        <h3>{{ vacation_left }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>💰 Salaire estimé</h6>
+        <h3>{{ estimated_salary }} €</h3>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <a href="/user/payroll" class="btn btn-outline-success w-100">💴 Mes fiches de paie</a>
+
+      </div>
+    </div>
+  </div>
+  <!-- Timesheet history -->
+  <div class="card shadow-sm p-3">
+    <h5>🗓 Historique récent</h5>
+
+    <table class="table table-sm mt-3">
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Valeur</th>
+        <th>Projet</th>
+      </tr>
+
+      {% for t in timesheets %}
+      <tr>
+        <td>{{ t.date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.value }}</td>
+        <td>{{ t.project }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

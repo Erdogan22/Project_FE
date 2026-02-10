@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+    <div class="card p-4 shadow-sm">
+
+        <div class="text-center">
+            <img src="{{ url_for('static', filename='profile_images/' + (user.profile_image or 'default.png')) }}"
+                 class="rounded-circle mb-3" width="120">
+
+            <h4>{{ user.prenom }} {{ user.nom }}</h4>
+            <p class="text-muted">{{ user.email }}</p>
+        </div>
+
+        <hr>
+
+        <div class="d-grid gap-2">
+            <a href="{{ url_for('admin.admin_timesheet', user_id=user.id) }}"
+               class="btn btn-primary">
+                📄 Feuille de temps
+            </a>
+
+            <a href="{{ url_for('admin.reset_password', user_id=user.id) }}"
+               class="btn btn-warning">
+                🔐 Réinitialiser mot de passe
+            </a>
+
+            <form method="POST" action="{{ url_for('admin.delete_user', user_id=user.id) }}" onsubmit="return confirm('Supprimer cet utilisateur ?');" enctype="multipart/form-data">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+                <button class="btn btn-danger w-100">🗑 Supprimer utilisateur</button>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

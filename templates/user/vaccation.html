@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Mes congés{% endblock %}
+
+{% block content %}
+<div class="container">
+
+  <h3 class="mb-4">🌴 Mes congés</h3>
+
+  {% if balance %}
+  <div class="card mb-4 shadow-sm">
+    <div class="card-body">
+      <h5>📊 Solde annuel {{ balance.year }}</h5>
+      <div class="row text-center">
+        <div class="col">
+          <strong>Total</strong><br>{{ balance.total_days }} j
+        </div>
+        <div class="col">
+          <strong>Utilisés</strong><br>{{ balance.used_days }} j
+        </div>
+        <div class="col">
+          <strong>Restants</strong><br>{{ balance.remaining_days }} j
+        </div>
+      </div>
+    </div>
+  </div>
+  {% endif %}
+
+  <a href="{{ url_for('admin.request_vacation') }}" class="btn btn-primary mb-3">
+    ➕ Demander un congé
+  </a>
+
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h5>📄 Historique des demandes</h5>
+
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Période</th>
+            <th>Jours</th>
+            <th>Type</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in requests %}
+          <tr>
+            <td>{{ r.start_date }} → {{ r.end_date }}</td>
+            <td>{{ r.days }}</td>
+            <td>{{ r.type }}</td>
+            <td>
+              {% if r.status == "pending" %}
+                <span class="badge bg-warning">En attente</span>
+              {% elif r.status == "approved" %}
+                <span class="badge bg-success">Approuvé</span>
+              {% else %}
+                <span class="badge bg-danger">Refusé</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

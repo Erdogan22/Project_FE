@@ -21,18 +21,41 @@
 
         {% for user in users %}
         <tr>
-            <td>{{ user.nom }} {{ user.prenom }}</td>
+            <td>
+                 <a href="{{ url_for('admin.view_user', user_id=user.id) }}" 
+                    class="text-decoration-none fw-semibold">
+                       {{ user.nom }} {{ user.prenom }}
+                </a>
+            </td>
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
+                {% if user.role != 'admin' %}
+                <a href="{{ url_for('admin.admin_timesheet', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
+                    🕒 Timesheet
+                </a>
+
+                <a href="{{ url_for('admin.generate_payroll_route', user_id=user.id) }}" class="btn btn-sm btn-outline-success">
+                    💰 Générer paie
+                </a>
+                {% endif %}
+
                 {% if user.role != 'admin' %}
                 <form method="POST" enctype="multipart/form-data"
                       action="{{ url_for('admin.delete_user', user_id=user.id) }}"
                       style="display:inline;"
                       onsubmit="return confirm('Supprimer cet utilisateur ?');">
-                    
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
                     <button type="submit" class="btn btn-danger btn-sm">
                         Supprimer
+                    </button>
+                </form>
+                <form method="POST" style="display:inline;"
+                      action="{{ url_for('admin.reset_password', user_id=user.id) }}"
+                      onsubmit="return confirm('Réinitialiser le mot de passe de cet utilisateur ?');">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                    <button type="submit" class="btn btn-warning btn-sm">
+                        Réinitialiser le mot de passe
                     </button>
                 </form>
                 {% endif %}

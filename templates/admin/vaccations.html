@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% block title %}Gestion des congés{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<h3 class="mb-4">🌴 Gestion des congés</h3>
+
+<div class="card shadow-sm">
+<div class="card-body">
+
+<table class="table table-sm">
+<thead>
+<tr>
+  <th>Employé</th>
+  <th>Période</th>
+  <th>Jours</th>
+  <th>Type</th>
+  <th>Motif</th>
+  <th>Statut</th>
+  <th>Actions</th>
+</tr>
+</thead>
+
+<tbody>
+{% for r in requests %}
+<tr>
+  {% set u = users_map.get(r.user_id) if users_map is defined else None %}
+  <td>{{ (u.nom ~ ' ' ~ u.prenom) if u else ('User #' ~ (r.user_id|string)) }}</td>
+  <td>{{ r.start_date }} → {{ r.end_date }}</td>
+  <td>{{ r.days }}</td>
+  <td>
+    {{ r.type }}
+    {% if r.type == "sick" and r.justificatif %}
+      <br><a href="{{ url_for('admin.download_justificatif', req_id=r.id) }}" class="btn btn-xs btn-outline-info" target="_blank">📄 Justificatif</a>
+    {% endif %}
+  </td>
+  <td>{{ r.reason }}</td>
+  <td>{{ r.status }}</td>
+  <td>
+    {% if r.status == "pending" %}
+      <a href="{{ url_for('admin.approve_vacation', req_id=r.id) }}" class="btn btn-sm btn-success">✔</a>
+      <a href="{{ url_for('admin.reject_vacation', req_id=r.id) }}" class="btn btn-sm btn-danger">✖</a>
+    {% else %}
+      —
+    {% endif %}
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+</div>
+{% endblock %}

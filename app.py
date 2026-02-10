@@ -1,17 +1,17 @@
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, url_for
 from flask_wtf import CSRFProtect
 from models import db, Timesheet, User, Project
-from datetime import date
+from datetime import date, datetime
 from flask import flash
 from werkzeug.security import generate_password_hash
 from flask_mail import Mail, Message
 
 
 import os
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user, login_required
 from routes.auth import auth
 from routes.user import user_bp
-from routes.admin import admin
+from routes.admin import admin, admin_required
 
 
 UPLOAD_FOLDER = 'static/profile_images'
@@ -29,7 +29,7 @@ app.secret_key = "super-secret-key"
 csrf = CSRFProtect(app)
 
 '''-----------------'''
-csrft = CSRFProtect(app)
+# csrft = CSRFProtect(app)
 
 app.secret_key = "super-secret-key"
 db.init_app(app)
@@ -99,42 +99,48 @@ def load_user(user_id):
 
 
 app.register_blueprint(auth)
-app.register_blueprint(admin)
-app.register_blueprint(user_bp)
+app.register_blueprint(user_bp, url_prefix='/user')
+app.register_blueprint(admin, url_prefix='/admin')
 
 '''-----------------'''
 
 
 
-@app.route("/feuille-de-temps", methods=["GET", "POST"])
-def timesheet():
-    if request.method == "POST":
+# @app.route("/feuille-de-temps", methods=["GET", "POST"])
+# @login_required
+# @admin_required
+# def timesheet():
+#     user = current_user
+#     month = datetime.now().strftime("%B %Y")
+    
+#     if request.method == "POST":
 
-        for day in range(1, 32):
+#         for day in range(1, 32):
 
-            for entry_type in ["work", "absence1", "absence2"]:
-                value = request.form.get(f"{entry_type}_{day}")
+#             for entry_type in ["work", "absence1", "absence2"]:
+#                 value = request.form.get(f"{entry_type}_{day}")
 
-                if value and float(value) > 0:
-                    ts = Timesheet(
-                        user="Mahmoud",
-                        date=date(2026, 1, day),
-                        type=entry_type,
-                        value=float(value),
-                        project="Projet 1"
-                    )
-                    db.session.add(ts)
+#                 if value and float(value) > 0:
+#                     ts = Timesheet(
+#                         user="Mahmoud",
+#                         date=date(2026, 1, day),
+#                         type=entry_type,
+#                         value=float(value),
+#                         project="Projet 1"
+#                     )
+#                     db.session.add(ts)
 
-        db.session.commit()
-        flash("✅ Feuille de temps enregistrée avec succès.")
+#         db.session.commit()
+#         flash("✅ Feuille de temps enregistrée avec succès.") 
 
-        return redirect("/feuille-de-temps")
+#         return redirect("/feuille-de-temps")
 
-    return render_template("timesheet.html")
+#     return render_template("timesheet.html", user=user, month=month)
 
-@app.route("/", methods=["GET"])
-def accueil():
-    return render_template("accueil.html")
+
+# @app.route("/", methods=["GET"])
+# def accueil():
+#     return render_template("accueil.html")
 
 if __name__ == "__main__":
     with app.app_context():

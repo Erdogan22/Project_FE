@@ -1,25 +1,80 @@
 {% extends "base.html" %}
-
 {% block title %}Admin Dashboard{% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-4">
+
+  <!-- Header -->
+  <div class="d-flex align-items-center mb-4">
     {% if current_user.profile_image %}
-    <img src=
-    "{{ url_for('static', filename='uploads/' + current_user.profile_image) }}" 
-    alt="Photo de profil" class="rounded-circle" 
-    width="80">
+      <img src="{{ url_for('static', filename='uploads/' + current_user.profile_image) }}"
+           class="rounded-circle me-3" width="70">
     {% endif %}
-
-    <h3>Tableau de bord Administrateur</h3>
-
-    <div class="list-group mt-4">
-        <a href="/admin/create-user" class="list-group-item list-group-item-action">
-            ➕ Créer utilisateur
-        </a>
-        <a href="/admin/users" class="list-group-item list-group-item-action">
-            👥 Gérer utilisateurs
-        </a>
+    <div>
+      <h4 class="mb-0">👑 Administration</h4>
+      <small class="text-muted">{{ month }}</small>
     </div>
+  </div>
+
+  <!-- KPI CARDS -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>👥 Utilisateurs</h6>
+        <h3>{{ total_users }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>🕒 Heures</h6>
+        <h3>{{ total_hours }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>❌ Absences</h6>
+        <h3>{{ total_absences }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>💰 Masse salariale</h6>
+        <h3>{{ total_payroll }} €</h3>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROL PANELS -->
+  <div class="row g-4">
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>👥 Utilisateurs</h5>
+        <a href="{{ url_for('admin.create_user') }}" class="btn btn-sm btn-outline-primary w-100 mt-2">Créer utilisateur</a>
+        <a href="{{ url_for('admin.manage_users') }}" class="btn btn-sm btn-outline-secondary w-100 mt-2">Gérer utilisateurs</a>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>📄 Timesheets</h5>
+        <a href="{{ url_for('admin.admin_timesheet_user') }}" class="btn btn-sm btn-outline-primary w-100 mt-2">Feuilles de temps</a>
+        <button class="btn btn-sm btn-outline-secondary w-100 mt-2" disabled>Validation</button>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card shadow-sm p-3 h-100">
+        <h5>💰 Finance</h5>
+        <button class="btn btn-sm btn-outline-primary w-100 mt-2" disabled>Payroll</button>
+        <button class="btn btn-sm btn-outline-secondary w-100 mt-2" disabled>Rapports</button>
+      </div>
+    </div>
+
+  </div>
+
 </div>
 {% endblock %}

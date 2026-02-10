@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h4>💰 Mes fiches de paie</h4>
+
+  {% for p in payrolls %}
+  <div class="card shadow-sm p-3 mb-3">
+    <h5>{{ p.month }}/{{ p.year }}</h5>
+
+    <div class="row">
+      <div class="col">Salaire base: {{ p.base_salary }}€</div>
+      <div class="col">Heures supp: {{ p.overtime_pay }}€</div>
+      <div class="col">Bonus: {{ p.bonus }}€</div>
+    </div>
+
+    <hr>
+
+    <div class="row">
+      <div class="col">Déductions: -{{ p.deductions }}€</div>
+      <div class="col">Taxes: -{{ p.taxes }}€</div>
+      <div class="col">Sécurité sociale: -{{ p.social_security }}€</div>
+    </div>
+
+    <hr>
+
+    <h5 class="text-success">Net à payer: {{ p.net_salary }}€</h5>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

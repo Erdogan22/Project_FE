@@ -18,8 +18,11 @@
 {% endblock messages %} -->
 
 <h1>Saisie de la feuille de temps – Consultant</h1>
-<p>Utilisateur : <strong>Mahmoud</strong> | Mois : <strong>Janvier 2026</strong></p>
-<form method="post">
+
+<p>Utilisateur : <strong>{{ user.name }}{{ user.prenom }}</strong> | Mois : <strong>{{ month }}</strong></p>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
     <div class ="table-container">
     <table class="timesheet">
 

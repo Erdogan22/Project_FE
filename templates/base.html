@@ -28,32 +28,58 @@
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav ms-auto">
-        <li>
+        {% if current_user.is_authenticated %}
           {% if current_user.role == 'admin' %}
-            <ul>
-              <li class="nav-item">
-                <a class="nav-link" href="/admin/dashboard">Dashboard</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/admin/users">Gérer utilisateurs</a>
-              </li>
-            </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin.dashboard') }}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin.manage_users') }}">Gérer utilisateurs</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="/admin/timesheet">Feuille de Temps</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin.create_user') }}">Créer utilisateur</a>
+            </li>
+             <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('admin.manage_vacations') }}">Congés</a>
+            </li>
           {% else %}
-            <ul>
-              <li class="nav-item">
-                <a class="nav-link" href="/user">Mon compte</a>
-              </li>
-              <li class="nav-item">
-                <a class="nav-link" href="/change-password">Changer mot de passe</a>
-              </li>
-            </ul>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('user.user_profile') }}">Mon compte</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('user.user_dashboard') }}">Dashboard</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('user.user_payroll') }}">Mes fiches de paie</a>
+            </li>
+            <!-- <li class="nav-item">
+              <a class="nav-link" href="/change-password">Changer mot de passe</a>
+            </li> -->
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('user.user_vacation') }}">Mes congés</a>
+            </li>
           {% endif %}
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-danger fw-semibold" href="/logout">
-            Déconnexion
-          </a>
-        </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="profileDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <img src="{{ url_for('static', filename='profile_images/' + (current_user.profile_image or 'default.png')) }}"
+                   alt="Profile" class="navbar-profile-img rounded-circle" width="32" height="32">
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">
+              <li><a class="dropdown-item" href="{{ url_for('user.user_profile') }}">Mon compte</a></li>
+              <li><a class="dropdown-item" href="{{ url_for('user.change_password') }}">Changer mot de passe</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item text-danger" href="{{ url_for('auth.logout') }}">Déconnexion</a></li>
+            </ul>
+          </li>
+        {% else %}
+          <li class="nav-item">
+            <a class="nav-link" href="/">Accueil</a>
+          </li>
+        {% endif %}
       </ul>
     </div>
     {% endif %}
@@ -66,57 +92,37 @@
     
     {% block header %}
              
-    <header>
-        <!-- <nav class="navbar">
-            <ul class="navbar-menu">
-                <li><a href="/">Home</a></li>
-                <li><a href="/feuille-de-temps">Feuille de Temps</a></li>
-                <li><a href="/about">About</a></li>
-                <li><a href="/contact">Contact</a></li>
-            </ul>
-        </nav> -->
-       <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid">
-        <a class="navbar-brand" href="/">Accueil</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav">
-                <li class="nav-item">
-                    <a class="nav-link" href="/inscription">Inscrire </a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/connexion">Connexion</a>
-                </li>
-                 <li class="nav-item">
-                    <a class="nav-link" href="/salariees">Salariees</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="/feuille-de-temps">Feuille de Temps</a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
-    </header>
-
+    <!-- <header>
+         
+        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+          <div class="container-fluid">
+              <a class="navbar-brand" href="/">Accueil</a>
+              <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                  <span class="navbar-toggler-icon"></span>
+              </button>
+              <div class="collapse navbar-collapse" id="navbarNav">
+                  <ul class="navbar-nav">
+                      <li class="nav-item">
+                          <a class="nav-link" href="/inscription">Inscrire </a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/connexion">Connexion</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/salariees">Salariees</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" href="/feuille-de-temps">Feuille de Temps</a>
+                      </li>
+                  </ul>
+              </div>
+          </div>
+        </nav>
+    </header> 
+ -->
     {% endblock header %}
    
 {%block messages%}
-<!-- {% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for message in messages %}
-        <div class="flash-success">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %} -->
-{%endblock messages%}
-<!-- success message
 {% with messages = get_flashed_messages() %}
   {% if messages %}
     <div class="container mt-3">
@@ -128,7 +134,8 @@
       {% endfor %}
     </div>
   {% endif %}
-{% endwith %} -->
+{% endwith %}
+{%endblock messages%}
 
 <!-- PAGE CONTENT -->
 <main class="container my-4">

@@ -149,3 +149,10 @@ def user_vacation():
         balance=balance,
         requests=requests
     )
+
+@user_bp.route('/payslips/')
+@login_required
+def user_payslips():
+    payslips = Payroll.query.filter_by(
+        user_id=current_user.id).all()
+    return render_template('user/payslips.html', payslips=payslips)

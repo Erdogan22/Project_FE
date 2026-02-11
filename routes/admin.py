@@ -1,6 +1,7 @@
 from flask import Blueprint, flash, render_template, request, redirect, abort, url_for, current_app, send_from_directory
 from flask_login import login_required, current_user
 from flask_wtf import CSRFProtect
+from utils.pdf_generator import generate_payslip_pdf
 from models import Timesheet, db, User, Project, MonthlyReport, Payroll, VacationRequest, VacationBalance
 from functools import wraps
 from werkzeug.utils import secure_filename
@@ -380,6 +381,40 @@ def generate_payroll_route(user_id):
     flash("💰 Paie générée avec succès")
     return redirect(url_for('admin.manage_users'))
 
+
+
+# Route pour générer la fiche de paie au format PDF
+@admin.route("/generate-payslip/<int:user_id>/<int:month>/<int:year>")
+@login_required
+@admin_required
+def generate_payslip(user_id, month, year):
+
+    user = User.query.get_or_404(user_id)
+    payroll = Payroll.query.filter_by(user_id=user_id, month=month, year=year).first()
+    report = MonthlyReport.query.filter_by(user_id=user_id, month=month, year=year).first()
+
+    if not payroll or not report:
+        flash("❌ Payroll or report not generated", "danger")
+        return redirect("/admin/dashboard")
+
+    folder = "payslips"
+    os.makedirs(folder, exist_ok=True)
+
+    filename = f"payslip_{user_id}{month}{year}.pdf"
+    output_path = os.path.join(folder, filename)
+
+    generate_payslip_pdf(user, payroll, report, output_path)
+
+    flash("✅ Fiche de paie générée", "success")
+    return redirect(f"/admin/download-payslip/{filename}")
+
+# Route pour télécharger la fiche de paie PDF
+@admin.route("/download-payslip/<filename>")
+@login_required
+@admin_required
+def download_payslip(filename):
+    folder = "payslips"
+    return send_from_directory(folder, filename, as_attachment=True)
 
 
 # Gestion des utilisateurs

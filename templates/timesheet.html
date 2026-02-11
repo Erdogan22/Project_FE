@@ -3,24 +3,11 @@
 {% block title %}Saisie feuille de temps{% endblock %}
 
 {% block content %}
-<!-- {%  block messages %}
-{% with messages = get_flashed_messages() %}
-  {% if messages %}
-    <div class="flash-container">
-      {% for message in messages %}
-        <div class="flash-success">
-          {{ message }}
-        </div>
-      {% endfor %}
-    </div>
-  {% endif %}
-{% endwith %}
-{% endblock messages %} -->
-
+<div class="card-ui">
 <h1>Saisie de la feuille de temps – Consultant</h1>
 <p>Utilisateur : <strong>Mahmoud</strong> | Mois : <strong>Janvier 2026</strong></p>
 <form method="post">
-    <div class ="table-container">
+    <div class ="table-responsive">
     <table class="timesheet">
 
         <!-- Header -->
@@ -97,6 +84,7 @@
         </tr>
 
     </table>
+    </div>
 </div>
     <!-- Commentaires -->
     <div class="comments">
@@ -111,4 +99,13 @@
 
 
 <script src="{{ url_for('static', filename='jscript/script.js') }}"></script>
+
+
+{% block footer %}
+<footer>
+    <p>&copy; 2026 Gestion des Feuilles de Temps</p>
+</footer>
+{% endblock  %}
+
 {% endblock %}
+

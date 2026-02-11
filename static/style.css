@@ -1,3 +1,4 @@
+/* ==================== BASE ==================== */
 body {
     font-family: Arial, sans-serif;
     background-color: #f5f6fa;
@@ -15,17 +16,17 @@ header h1 {
     margin: 0;
 }
 
-
-
 main {
     padding: 30px;
 }
 
+/* ==================== TIMESHEET ==================== */
 .timesheet {
     border-collapse: collapse;
     width: 100%;
     background: white;
 }
+
 /* General table styling */
 table.timesheet {
     width: 100%;
@@ -51,14 +52,13 @@ table.timesheet .label {
     font-weight: bold;
 }
 
-/* Ensure the table scrolls horizontally on smaller screens */
+/* Ensure table scrolls horizontally on smaller screens */
 table.timesheet {
     display: block;
     overflow-x: auto;
     white-space: nowrap;
 }
 
-/* Style for smaller screens */
 @media (max-width: 768px) {
     table.timesheet {
         font-size: 12px;
@@ -79,7 +79,6 @@ table.timesheet {
     }
 }
 
-/* Style for very small screens */
 @media (max-width: 480px) {
     table.timesheet th,
     table.timesheet td {
@@ -91,6 +90,7 @@ table.timesheet {
         font-size: 12px;
     }
 }
+
 .timesheet th,
 .timesheet td {
     border: 1px solid #ccc;
@@ -118,7 +118,7 @@ table.timesheet {
 }
 
 button {
-    background-color: #27ae60;
+    background-color: #4f46e5;
     color: white;
     border: none;
     padding: 10px 25px;
@@ -130,7 +130,6 @@ button {
 button:hover {
     background-color: #219150;
 }
-
 
 .total-row {
     background-color: #e8f6ff;
@@ -150,8 +149,7 @@ button:hover {
     resize: none;
 }
 
-
-/* message */
+/* ==================== FLASH MESSAGES ==================== */
 .flash-container {
     margin: 20px 30px;
 }
@@ -167,9 +165,8 @@ button:hover {
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 
-
 .timesheet td {
-    transition: background-color 0.3s, color 0.3s; /* smooth color change */
+    transition: background-color 0.3s, color 0.3s;
     text-align: center;
 }
 
@@ -180,11 +177,12 @@ button:hover {
 .label {
     font-weight: bold;
 }
+
 .total-row {
     transition: background-color 0.3s;
 }
 
-/* Navbar styling */
+/* ==================== NAVBAR ==================== */
 .navbar {
     background-color: #34495e;
     padding: 10px 20px;
@@ -213,3 +211,267 @@ button:hover {
 .navbar-menu a:hover {
     background-color: #2c3e50;
 }
+
+/* ==================== DASHBOARD LAYOUT ==================== */
+.dashboard-body {
+    background: #f4f6fb;
+    font-family: "Inter", Arial, sans-serif;
+}
+
+.dashboard {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    background: #4f46e5;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    transition: width 0.3s ease;
+}
+
+.sidebar-logo {
+    padding: 20px;
+    font-size: 20px;
+    font-weight: bold;
+    border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 15px;
+    padding: 14px 20px;
+    color: white;
+    text-decoration: none;
+    opacity: 0.9;
+    white-space: nowrap;
+}
+
+.sidebar-menu li a:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+.sidebar-menu .logout {
+    margin-top: auto;
+}
+
+/* Active menu highlight */
+.sidebar-menu a.active {
+    background: rgba(255,255,255,0.18);
+    border-left: 4px solid #ffffff;
+}
+
+/* Sidebar collapse */
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar.collapsed span {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-logo span {
+    display: none;
+}
+
+.sidebar.collapsed .sidebar-menu a {
+    justify-content: center;
+}
+
+/* Main area */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    transition: margin-left 0.3s ease;
+}
+
+/* Top bar */
+.topbar {
+    background: white;
+    padding: 12px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.topbar-actions {
+    margin-left: auto;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.search {
+    width: 300px;
+    padding: 8px 12px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+.user-avatar {
+    width: 38px;
+    height: 38px;
+    background: #4f46e5;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+}
+
+/* Content */
+.content {
+    padding: 30px;
+    overflow-y: auto;
+}
+
+/* Card */
+.card-ui {
+    background: white;
+    border-radius: 14px;
+    padding: 25px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+
+/* ==================== RESPONSIVE DASHBOARD ==================== */
+@media (max-width: 992px) {
+    .sidebar {
+        position: fixed;
+        left: -240px;
+        top: 0;
+        height: 100vh;
+        z-index: 1000;
+        transition: left 0.3s ease;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .main {
+        margin-left: 0;
+    }
+
+    .search {
+        width: 200px;
+    }
+}
+
+@media (max-width: 576px) {
+    .search {
+        display: none;
+    }
+
+    .content {
+        padding: 15px;
+    }
+
+    .card-ui {
+        padding: 15px;
+    }
+
+    button {
+        width: 100%;
+    }
+}
+
+/* Table responsive wrapper */
+.table-responsive {
+    overflow-x: auto;
+}
+
+/* Sticky table headers */
+.timesheet th {
+    position: sticky;
+    top: 0;
+    background: #f4f6fb;
+    z-index: 2;
+}
+
+/* Global transition for smooth animations */
+* {
+    transition: background-color 0.2s ease,
+                color 0.2s ease,
+                padding 0.2s ease;
+}
+
+/* Dark mode */
+body.dark {
+    background: #0f172a;
+}
+
+body.dark .main,
+body.dark .content {
+    background: #0f172a;
+    color: #e5e7eb;
+}
+
+body.dark .card-ui {
+    background: #1e293b;
+}
+
+body.dark .topbar {
+    background: #1e293b;
+}
+
+body.dark .sidebar {
+    background: #312e81;
+}
+
+body.dark .timesheet th {
+    background: #1e293b;
+    color: #e5e7eb;
+}
+
+/* Smooth collapse animation */
+.sidebar {
+    width: 240px;
+    min-width: 240px;
+    max-width: 240px;
+    transition: width 0.3s ease; /* smooth width transition */
+}
+
+.sidebar.collapsed {
+    width: 70px;
+}
+
+.sidebar-menu a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease; /* smooth icon + text transition */
+}
+
+.sidebar.collapsed .sidebar-menu a {
+    justify-content: center;
+}
+
+.sidebar-menu a span {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    transition: opacity 0.3s ease;
+}
+
+.sidebar.collapsed .sidebar-menu a span {
+    opacity: 0;
+    width: 0;
+    display: inline-block;
+}
+/* 

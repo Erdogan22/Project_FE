@@ -1,0 +1,416 @@
+{% extends "base.html" %}
+
+{% block title %}Saisie feuille de temps{% endblock %}
+
+{% block content %}
+<!-- {%  block messages %}
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="flash-container">
+      {% for message in messages %}
+        <div class="flash-success">
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+{% endblock messages %} -->
+
+<h1>Saisie de la feuille de temps – Consultant</h1>
+
+<p>Utilisateur : <strong>{{ user.name }}{{ user.prenom }}</strong> | Mois : <strong>{{ month }}</strong></p>
+
+<form method="post" enctype="multipart/form-data">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+    <div class ="table-container">
+    <table class="timesheet">
+
+        <!-- Header -->
+        <tr>
+            <th>Jours</th>
+            {% for d in range(1, 32) %}
+                <th>{{ d }}/1</th>
+            {% endfor %}
+        </tr>
+
+        <!-- Jours travaillés -->
+        <tr>
+            <td class="label">
+                Jours travaillés<br>
+                <small>Projet 1</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td>
+                    <input type="number"
+                           name="work_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures travaillées pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Absence 1 -->
+        <tr>
+            <td class="label">
+                Absence 1<br>
+                <small>Maladie, congés, autre</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td id="abs1_{{ d }}">
+                    <input type="number"
+                           name="absence1_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures d'absence pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Absence 2 -->
+        <tr>
+            <td class="label">
+                Absence 2<br>
+                <small>Maladie, congés, autre</small>
+            </td>
+            {% for d in range(1, 32) %}
+                <td id="abs2_{{ d }}">
+                    <input type="number"
+                           name="absence2_{{ d }}"
+                           step="0.5"
+                           min="0"
+                           max="1"
+                           title="Heures d'absence pour le jour {{ d }}"
+                           placeholder="0.5">
+                </td>
+            {% endfor %}
+        </tr>
+
+        <!-- Total -->
+        <tr class="total-row">
+            <td class="label">Total</td>
+            {% for d in range(1, 32) %}
+                <td class="total-cell" id="total_{{ d }}">0</td>
+            {% endfor %}
+        </tr>
+
+    </table>
+</div>
+    <!-- Commentaires -->
+    <div class="comments">
+        <label>Commentaires</label><br>
+        <textarea name="comments" rows="3" title="Enter your comments here" placeholder="Enter your comments..."></textarea>
+    </div>
+
+    <div class="actions">
+        <button type="submit">Soumettre</button>
+    </div>
+</form>
+
+
+<script src="{{ url_for('static', filename='jscript/script.js') }}"></script>
+{% endblock %} 
+
+
+
+
+
+<!-- tryyyyyyy -->
+
+{% extends "base.html" %}
+{% block title %}Feuille de temps{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+<div class="card shadow-lg border-0 rounded-4 p-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-0">📄 Feuille de temps</h4>
+      <small class="text-muted">
+        {{ user.prenom }} {{ user.nom }} — {{ month }}
+      </small>
+    </div>
+  </div>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Jour</th>
+            <th>Date</th>
+            <th>Travail (h)</th>
+            <th>Absence</th>
+            <th>Heures absence</th>
+            <th>Statut</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for d in range(1, days_in_month + 1) %}
+          {% set is_future = d > today_day %}
+          <tr class="{% if is_future %}table-secondary{% endif %}">
+            <td>{{ d }}</td>
+            <td>{{ d }}/{{ month }}</td>
+
+            <!-- Work -->
+            <td>
+              <input type="number"
+                     name="work_{{ d }}"
+                     step="0.5"
+                     min="0"
+                     max="8"
+                     class="form-control form-control-sm"
+                     {% if is_future %}disabled{% endif %}>
+            </td>
+
+            <!-- Absence type -->
+            <td>
+              <select name="absence_type_{{ d }}"
+                      class="form-select form-select-sm"
+                      {% if is_future %}disabled{% endif %}>
+                <option value="">—</option>
+                <option value="paid">Congé payé</option>
+                <option value="unpaid">Congé non payé</option>
+                <option value="sick">Maladie</option>
+              </select>
+            </td>
+
+            <!-- Absence hours -->
+            <td>
+              <input type="number"
+                     name="absence_{{ d }}"
+                     step="0.5"
+                     min="0"
+                     max="8"
+                     class="form-control form-control-sm"
+                     {% if is_future %}disabled{% endif %}>
+            </td>
+
+            <!-- Status -->
+            <td>
+              {% if is_future %}
+                <span class="badge bg-secondary">Bloqué</span>
+              {% else %}
+                <span class="badge bg-success">Ouvert</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+      <button type="submit" class="btn btn-primary px-4">
+        💾 Enregistrer la feuille
+      </button>
+    </div>
+
+  </form>
+
+</div>
+</div>
+{% endblock %}
+
+<!-- try -->
+
+{% extends "base.html" %}
+{% block title %}Feuille de temps{% endblock %}
+
+{% block content %}
+<div class="container-fluid mt-4">
+
+<div class="card shadow-lg border-0 rounded-4 p-4">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h4 class="mb-0">📄 Feuille de temps</h4>
+      <small class="text-muted">
+        {{ user.prenom }} {{ user.nom }} — {{ month }}
+      </small>
+    </div>
+  </div>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <div class="table-responsive">
+      <table class="table table-bordered align-middle text-center timesheet-table">
+
+        <!-- HEADER -->
+        <thead class="table-light">
+          <tr>
+            <th style="min-width:160px">Type / Jour</th>
+            {% for d in range(1, days_in_month + 1) %}
+              <th class="{% if d > today_day %}table-secondary{% endif %}">
+                {{ d }}
+              </th>
+            {% endfor %}
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <!-- WORK ROW -->
+          <tr>
+            <td class="fw-bold text-start">🧑‍💼 Travail (h)</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_future = d > today_day %}
+              <td class="{% if is_future %}bg-light{% endif %}">
+                <input type="number"
+                       name="work_{{ d }}"
+                       step="0.5"
+                       min="0"
+                       max="8"
+                       class="form-control form-control-sm text-center"
+                       {% if is_future %}disabled{% endif %}>
+              </td>
+            {% endfor %}
+          </tr>
+
+          <!-- ABSENCE TYPE -->
+          <tr>
+            <td class="fw-bold text-start">🏖 Type d'absence</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_future = d > today_day %}
+              <td class="{% if is_future %}bg-light{% endif %}">
+                <select name="absence_type_{{ d }}"
+                        class="form-select form-select-sm"
+                        {% if is_future %}disabled{% endif %}>
+                  <option value="">—</option>
+                  <option value="paid">Congé payé</option>
+                  <option value="unpaid">Congé non payé</option>
+                  <option value="sick">Maladie</option>
+                </select>
+              </td>
+            {% endfor %}
+          </tr>
+
+          <!-- ABSENCE HOURS -->
+          <tr>
+            <td class="fw-bold text-start">⏳ Heures absence</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_future = d > today_day %}
+              <td class="{% if is_future %}bg-light{% endif %}">
+                <input type="number"
+                       name="absence_{{ d }}"
+                       step="0.5"
+                       min="0"
+                       max="8"
+                       class="form-control form-control-sm text-center"
+                       {% if is_future %}disabled{% endif %}>
+              </td>
+            {% endfor %}
+          </tr>
+
+          <!-- STATUS -->
+          <tr class="table-light">
+            <td class="fw-bold text-start">🔒 Statut</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% if d > today_day %}
+                <td><span class="badge bg-secondary">Bloqué</span></td>
+              {% else %}
+                <td><span class="badge bg-success">Ouvert</span></td>
+              {% endif %}
+            {% endfor %}
+          </tr>
+
+        </tbody>
+
+      </table>
+    </div>
+
+    <div class="mt-4 d-flex justify-content-end">
+      <button type="submit" class="btn btn-primary px-4">
+        💾 Enregistrer la feuille
+      </button>
+    </div>
+
+  </form>
+
+</div>
+</div>
+{% endblock %}
+
+<!-- user dashboard -->
+ {% extends "base.html" %}
+{% block content %}
+
+<div class="container mt-4">
+
+  <h4 class="mb-4">📊 Dashboard - {{ month }}</h4>
+
+  <!-- KPI Cards -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>🕒 Heures</h6>
+        <h3>{{ total_hours }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>❌ Absences</h6>
+        <h3>{{ absences }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>🏖 Vacances restantes</h6>
+        <h3>{{ vacation_left }}</h3>
+      </div>
+    </div>
+
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <h6>💰 Salaire estimé</h6>
+        <h3>{{ estimated_salary }} €</h3>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card shadow-sm p-3 text-center">
+        <a href="{{ url_for('user.user_payroll') }}" class="btn btn-outline-success w-100">💴 Mes fiches de paie</a>
+        <a href="{{ url_for('user.user_payslips') }}" class="btn btn-outline-info w-100 mt-2">📄 Mes rapports de paie</a>
+        <a href="{{ url_for('user.user_vacation') }}" class="btn btn-outline-warning w-100 mt-2">🏖 Mes congés</a>
+      </div>
+    </div>
+  </div>
+  <!-- Timesheet history -->
+  <div class="card shadow-sm p-3">
+    <h5>🗓 Historique récent</h5>
+
+    <table class="table table-sm mt-3">
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Valeur</th>
+        <th>Projet</th>
+      </tr>
+
+      {% for t in timesheets %}
+      <tr>
+        <td>{{ t.date.strftime("%d/%m/%Y") }}</td>
+        <td>{{ t.type }}</td>
+        <td>{{ t.value }}</td>
+        <td>{{ t.project }}</td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</div>
+
+{% endblock %}

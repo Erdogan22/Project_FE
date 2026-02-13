@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% block title %}Rapport employé{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <h3>📊 Rapport mensuel</h3>
+      <p class="text-muted">Employé : <strong>{{ user.prenom }} {{ user.nom }}</strong></p>
+    </div>
+
+    <div class="col-md-4 text-end">
+      <a href="/admin/users" class="btn btn-sm btn-outline-secondary">
+        ← Retour utilisateurs
+      </a>
+    </div>
+  </div>
+
+  {% if reports and reports|length > 0 %}
+  <div class="card shadow-sm border-0 rounded-4">
+    <div class="table-responsive">
+      <table class="table table-hover align-middle mb-0">
+        <thead class="table-light">
+          <tr>
+            <th>Mois</th>
+            <th>Année</th>
+            <th>Heures travail</th>
+            <th>Heures supp.</th>
+            <th>Absences</th>
+            <th>Congés payés</th>
+            <th>Congés non payés</th>
+            <th>Maladie</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in reports %}
+          <tr>
+            <td>{{ r.month }}</td>
+            <td>{{ r.year }}</td>
+            <td>{{ r.work_hours }}</td>
+            <td>{{ r.overtime_hours }}</td>
+            <td>{{ r.absence_days }}</td>
+            <td>{{ r.vacation_day }}</td>
+            <td>{{ r.unpaid_days }}</td>
+            <td>{{ r.sick_days }}</td>
+
+            <td>
+              <div class="btn-group btn-group-sm">
+                <a href="/admin/generate-payroll/{{ user.id }}?month={{ r.month }}&year={{ r.year }}"
+                   class="btn btn-outline-success">
+                  💰 Paie
+                </a>
+
+                <a href="/admin/generate-payslip/{{ user.id }}/{{ r.month }}/{{ r.year }}"
+                   class="btn btn-outline-dark">
+                  🧾 PDF
+                </a>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  {% else %}
+  <div class="alert alert-info text-center">
+    Aucun rapport mensuel disponible pour cet utilisateur.
+  </div>
+  {% endif %}
+
+</div>
+{% endblock %}

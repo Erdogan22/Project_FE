@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Demande de congé{% endblock %}
+
+{% block content %}
+<div class="container col-md-6">
+
+<h3 class="mb-4">🌴 Demande de congé</h3>
+
+<form method="POST" enctype="multipart/form-data">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+  <div class="mb-3">
+    <label>Date début</label>
+    <input type="date" name="start" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Date fin</label>
+    <input type="date" name="end" class="form-control" required>
+  </div>
+
+  <div class="mb-3">
+    <label>Type</label>
+    <select name="type" class="form-control" id="vacationType">
+      <option value="paid">Congé payé</option>
+      <option value="unpaid">Sans solde</option>
+      <option value="sick">Maladie</option>
+      <option value="exceptional">Exceptionnel</option>
+    </select>
+  </div>
+
+  <div class="mb-3" id="justificatifDiv" style="display: none;">
+    <label for="justificatif" class="form-label">📄 Justificatif médical <span class="text-danger">*</span></label>
+    <input type="file" name="justificatif" id="justificatif" class="form-control" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx">
+    <small class="text-muted">Fichiers acceptés: PDF, Images (JPG, PNG), Documents (DOC, DOCX)</small>
+  </div>
+
+  <div class="mb-3">
+    <label>Motif</label>
+    <textarea name="reason" class="form-control"></textarea>
+  </div>
+
+  <button class="btn btn-success w-100">📤 Envoyer la demande</button>
+
+</form>
+
+<script>
+  document.getElementById('vacationType').addEventListener('change', function() {
+    const justificatifDiv = document.getElementById('justificatifDiv');
+    const justificatifInput = document.getElementById('justificatif');
+    
+    if (this.value === 'sick') {
+      justificatifDiv.style.display = 'block';
+      justificatifInput.required = true;
+    } else {
+      justificatifDiv.style.display = 'none';
+      justificatifInput.required = false;
+    }
+  });
+</script>
+
+</div>
+{% endblock %}

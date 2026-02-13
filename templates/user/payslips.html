@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}Mes fiches de paie{% endblock %}
+
+{% block content %}
+<div class="container">
+
+<h3 class="mb-4">📄 Mes fiches de paie</h3>
+
+<div class="card shadow-sm">
+<div class="card-body">
+
+<table class="table table-sm">
+<thead>
+<tr>
+  <th>Mois</th>
+  <th>Net (€)</th>
+  <th>PDF</th>
+</tr>
+</thead>
+
+<tbody>
+{% for p in payslips %}
+<tr>
+  <td>{{ p.month }}/{{ p.year }}</td>
+  <td>{{ "%.2f"|format(p.net_salary) }}</td>
+   <td>
+   <!-- <a href="{{ url_for('admin.download_payslip', filename=('payslip_' ~ p.user_id ~ p.month ~ p.year ~ '.pdf')) }}"
+     class="btn btn-sm btn-outline-primary">
+     📥 Télécharger
+   </a> -->
+   <a href="/admin/generate-payslip/{{ p.user_id }}/{{ p.month }}/{{ p.year }}"
+        class="btn btn-outline-dark">
+      🧾 PDF
+    </a>
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
+
+</div>
+</div>
+
+</div>
+{% endblock %}

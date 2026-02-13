@@ -1,111 +1,162 @@
 {% extends "base.html" %}
 
-{% block title %}Saisie feuille de temps{% endblock %}
+{% block title %}Feuille de temps{% endblock %}
 
 {% block content %}
-<div class="card-ui">
-<h1>Saisie de la feuille de temps – Consultant</h1>
-<p>Utilisateur : <strong>Mahmoud</strong> | Mois : <strong>Janvier 2026</strong></p>
-<form method="post">
-    <div class ="table-responsive">
-    <table class="timesheet">
+<div class="container-fluid mt-4">
+
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <div>
+      <h4 class="fw-bold">📄 Feuille de temps</h4>
+      <p class="text-muted mb-0">
+        Employé : <strong>{{ user.prenom }} {{ user.nom }}</strong> |
+        Mois : <strong>{{ month }}</strong>
+      </p>
+    </div>
+  </div>
+
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+
+    <div class="table-responsive shadow-sm rounded">
+      <table class="table table-bordered table-hover align-middle text-center timesheet-table">
 
         <!-- Header -->
-        <tr>
-            <th>Jours</th>
-            {% for d in range(1, 32) %}
-                <th>{{ d }}/1</th>
+        <thead class="table-dark">
+          <tr>
+            <th class="text-start">Type</th>
+            {% for d in range(1, days_in_month + 1) %}
+              <th>{{ d }}</th>
             {% endfor %}
-        </tr>
+          </tr>
+        </thead>
 
-        <!-- Jours travaillés -->
-        <tr>
-            <td class="label">
-                Jours travaillés<br>
-                <small>Projet 1</small>
-            </td>
-            {% for d in range(1, 32) %}
-                <td>
-                    <input type="number"
-                           name="work_{{ d }}"
-                           step="0.5"
-                           min="0"
-                           max="1"
-                           title="Heures travaillées pour le jour {{ d }}"
-                           placeholder="0.5">
-                </td>
+        <tbody>
+
+          <!-- STATUS ROW -->
+          <tr class="table-light">
+            <td class="fw-bold text-start">🔒 Statut</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% if d < today_day %}
+                <td><span class="badge bg-dark">Verrouillé</span></td>
+              {% elif d == today_day %}
+                <td><span class="badge bg-primary">Aujourd’hui</span></td>
+              {% else %}
+                <td><span class="badge bg-secondary">À venir</span></td>
+              {% endif %}
             {% endfor %}
-        </tr>
+          </tr>
 
-        <!-- Absence 1 -->
-        <tr>
-            <td class="label">
-                Absence 1<br>
-                <small>Maladie, congés, autre</small>
-            </td>
-            {% for d in range(1, 32) %}
-                <td id="abs1_{{ d }}">
-                    <input type="number"
-                           name="absence1_{{ d }}"
-                           step="0.5"
-                           min="0"
-                           max="1"
-                           title="Heures d'absence pour le jour {{ d }}"
-                           placeholder="0.5">
-                </td>
+          <!-- WORK ROW -->
+          <tr>
+            <td class="fw-bold text-start">🧑‍💼 Travail</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_past = d < today_day %}
+              {% set is_future = d > today_day %}
+              <td>
+                <input type="number"
+                       name="work_{{ d }}"
+                       step="0.5"
+                       min="0"
+                       max="8"
+                       class="form-control form-control-sm text-center"
+                       placeholder="h"
+                       {% if is_past or is_future %}disabled{% endif %}>
+              </td>
             {% endfor %}
-        </tr>
+          </tr>
 
-        <!-- Absence 2 -->
-        <tr>
-            <td class="label">
-                Absence 2<br>
-                <small>Maladie, congés, autre</small>
-            </td>
-            {% for d in range(1, 32) %}
-                <td id="abs2_{{ d }}">
-                    <input type="number"
-                           name="absence2_{{ d }}"
-                           step="0.5"
-                           min="0"
-                           max="1"
-                           title="Heures d'absence pour le jour {{ d }}"
-                           placeholder="0.5">
-                </td>
+          <!-- ABSENCE TYPE ROW -->
+          <tr>
+            <td class="fw-bold text-start">🏖 Type absence</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_past = d < today_day %}
+              {% set is_future = d > today_day %}
+              <td>
+                <select name="absence_type_{{ d }}"
+                        class="form-select form-select-sm"
+                        {% if is_past or is_future %}disabled{% endif %}>
+                  <option value="">—</option>
+                  <option value="paid">Congé payé</option>
+                  <option value="unpaid">Congé non payé</option>
+                  <option value="sick">Maladie</option>
+                  <option value="other">Autre</option>
+                </select>
+              </td>
             {% endfor %}
-        </tr>
+          </tr>
 
-        <!-- Total -->
-        <tr class="total-row">
-            <td class="label">Total</td>
-            {% for d in range(1, 32) %}
-                <td class="total-cell" id="total_{{ d }}">0</td>
+          <!-- ABSENCE HOURS ROW -->
+          <tr>
+            <td class="fw-bold text-start">⏳ Heures absence</td>
+            {% for d in range(1, days_in_month + 1) %}
+              {% set is_past = d < today_day %}
+              {% set is_future = d > today_day %}
+              <td>
+                <input type="number"
+                       name="absence_{{ d }}"
+                       step="0.5"
+                       min="0"
+                       max="8"
+                       class="form-control form-control-sm text-center"
+                       placeholder="h"
+                       {% if is_past or is_future %}disabled{% endif %}>
+              </td>
             {% endfor %}
-        </tr>
+          </tr>
 
-    </table>
+        </tbody>
+      </table>
     </div>
+
+    <!-- Comments -->
+    <div class="card mt-3 shadow-sm">
+      <div class="card-body">
+        <label class="fw-bold">📝 Commentaires</label>
+        <textarea name="comments" rows="3" class="form-control mt-2"
+                  placeholder="Commentaires administratifs / RH"></textarea>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="d-flex justify-content-end mt-3">
+      <button type="submit" class="btn btn-success px-4">
+        ✅ Enregistrer
+      </button>
+    </div>
+
+  </form>
+
 </div>
-    <!-- Commentaires -->
-    <div class="comments">
-        <label>Commentaires</label><br>
-        <textarea name="comments" rows="3" title="Enter your comments here" placeholder="Enter your comments..."></textarea>
-    </div>
 
-    <div class="actions">
-        <button type="submit">Soumettre</button>
-    </div>
-</form>
+<style>
+.timesheet-table th,
+.timesheet-table td {
+  white-space: nowrap;
+  font-size: 13px;
+  padding: 6px;
+}
 
+.timesheet-table input,
+.timesheet-table select {
+  font-size: 12px;
+  padding: 2px;
+}
 
-<script src="{{ url_for('static', filename='jscript/script.js') }}"></script>
+.timesheet-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+}
 
-
-{% block footer %}
-<footer>
-    <p>&copy; 2026 Gestion des Feuilles de Temps</p>
-</footer>
-{% endblock  %}
+.timesheet-table td:first-child,
+.timesheet-table th:first-child {
+  position: sticky;
+  left: 0;
+  background: #f8f9fa;
+  z-index: 1;
+}
+</style>
 
 {% endblock %}
-

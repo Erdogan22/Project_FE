@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-5">
+
+  <div class="row justify-content-center">
+    <div class="col-lg-6 col-md-8">
+
+      <div class="card shadow-lg border-0 rounded-4 overflow-hidden">
+
+        <!-- Header -->
+        <div class="bg-primary text-white text-center p-4">
+          <img src="{{ url_for('static', filename='profile_images/' + (user.profile_image or 'default.png')) }}"
+               class="rounded-circle border border-3 border-white mb-2"
+               width="120" height="120"
+               style="object-fit:cover;">
+          <h4 class="mt-2">{{ user.prenom }} {{ user.nom }}</h4>
+          <p class="mb-0">{{ user.email }}</p>
+        </div>
+
+        <!-- Body -->
+        <div class="card-body p-4">
+
+          <div class="row g-3">
+
+            <!-- HR Actions -->
+            <div class="col-12">
+              <h6 class="text-muted mb-2">📁 Gestion RH</h6>
+              <div class="d-grid gap-2">
+                <a href="{{ url_for('admin.admin_timesheet', user_id=user.id) }}" class="btn btn-outline-primary">
+                  📄 Feuille de temps
+                </a>
+
+                <a href="/admin/report/{{ user.id }}" class="btn btn-outline-info">
+                  📊 Rapport mensuel
+                </a>
+
+                <a href="{{ url_for('admin.generate_payroll_route', user_id=user.id) }}" 
+                   class="btn btn-outline-success">
+                  💰 Générer paie
+                </a>
+
+                <a href="/admin/generate-payslip/{{ user.id }}/{{ current_month }}/{{ current_year }}"
+                   class="btn btn-outline-dark">
+                  🧾 Générer fiche PDF
+                </a>
+              </div>
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Security -->
+            <div class="col-12">
+              <h6 class="text-muted mb-2">🔐 Sécurité</h6>
+              <div class="d-grid gap-2">
+                <a href="{{ url_for('admin.reset_password', user_id=user.id) }}"
+                   class="btn btn-warning">
+                  🔁 Réinitialiser mot de passe
+                </a>
+
+                <form method="POST"
+                      action="{{ url_for('admin.delete_user', user_id=user.id) }}"
+                      onsubmit="return confirm('Supprimer cet utilisateur ?');">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}"/>
+                  <button class="btn btn-danger w-100">
+                    🗑 Supprimer utilisateur
+                  </button>
+                </form>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+</div>
+{% endblock %}

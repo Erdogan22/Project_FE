@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container mt-4">
+  <h4>📊 Mes rapports mensuels</h4>
+
+  {% for r in reports %}
+  <div class="card shadow-sm p-3 mb-3">
+    <h5>{{ r.month }}/{{ r.year }}</h5>
+
+    <div class="row">
+      <div class="col">Heures travail: <strong>{{ r.total_work_hours }}</strong></div>
+      <div class="col">Absences: <strong>{{ r.absence_days }} jours</strong></div>
+      <div class="col">Salaire: <strong>{{ r.salary_total }} €</strong></div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

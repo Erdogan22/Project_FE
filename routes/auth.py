@@ -5,7 +5,8 @@ from models import User
 auth = Blueprint('auth', __name__)
 
 
-# Login route
+# Login route - Home page
+@auth.route('/', methods=['GET', 'POST'])
 @auth.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -17,13 +18,13 @@ def login():
         if user and user.check_password(password):
             login_user(user)
             
-            if user.must_change_password:
-                return redirect(url_for('user.change_password'))
+            # if user.must_change_password:
+            #     return redirect(url_for('user.change_password'))
             
             if user.role == 'admin':
                 return redirect(url_for('admin.dashboard'))
             else:
-                return redirect(url_for('user.user_page'))
+                return redirect(url_for('user.user_dashboard')) #user_page
 
     return render_template('authentification.html')
 

@@ -65,13 +65,15 @@
         <button class="btn btn-sm btn-outline-secondary w-100 mt-2" disabled>Validation</button>
       </div>
     </div>
-
+     <!-- {{ url_for('admin.manage_users') }} -->
     <div class="col-md-4">
       <div class="card shadow-sm p-3 h-100">
         <h5>💰 Finance</h5>
-        <button class="btn btn-sm btn-outline-primary w-100 mt-2" disabled>Payroll</button>
-        <button class="btn btn-sm btn-outline-secondary w-100 mt-2" disabled>Rapports</button>
-      </div>
+        <a href="/admin/users" class="btn btn-sm btn-outline-primary w-100 mt-2">Générer fiches de paie</a>
+        <!-- <button class="btn btn-sm btn-outline-primary w-100 mt-2" disabled>Payroll</button> -->
+        <a href="/admin/users" class="btn btn-sm btn-outline-primary w-100 mt-2">Rapports</a>
+        <!-- <button class="btn btn-sm btn-outline-secondary w-100 mt-2" disabled>Rapports</button> -->
+      </div> 
     </div>
 
   </div>

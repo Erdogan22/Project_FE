@@ -1,3 +1,4 @@
+import calendar
 from flask import Blueprint, flash, render_template, request, redirect, abort, url_for, current_app, send_from_directory
 from flask_login import login_required, current_user
 from flask_wtf import CSRFProtect
@@ -253,6 +254,18 @@ def generate_report(user_id):
     flash("📊 Rapport mensuel généré")
     return redirect(url_for('admin.manage_users'))
 
+# Route pour afficher les rapports mensuels d'un utilisateur (accessible par admin)
+@admin.route('/report/<int:user_id>')
+@login_required
+@admin_required
+def admin_report(user_id):
+    reports = MonthlyReport.query.filter_by(
+        user_id=user_id
+    ).order_by(MonthlyReport.year.desc(), MonthlyReport.month.desc()).all()
+
+    user = User.query.get_or_404(user_id)
+
+    return render_template('admin/report.html', reports=reports, user=user)
 
 # # Route pour que les utilisateurs puissent voir leurs rapports mensuels
 # @admin.route('/user/reports')
@@ -379,19 +392,19 @@ def generate_payroll_route(user_id):
     generate_payroll(user_id, now.month, now.year)
 
     flash("💰 Paie générée avec succès")
-    return redirect(url_for('admin.manage_users'))
+    return redirect(url_for('admin.admin_report', user_id=user_id))
 
 
 
 # Route pour générer la fiche de paie au format PDF
 @admin.route("/generate-payslip/<int:user_id>/<int:month>/<int:year>")
 @login_required
-@admin_required
+#@admin_required
 def generate_payslip(user_id, month, year):
 
     user = User.query.get_or_404(user_id)
-    payroll = Payroll.query.filter_by(user_id=user_id, month=month, year=year).first()
-    report = MonthlyReport.query.filter_by(user_id=user_id, month=month, year=year).first()
+    payroll = Payroll.query.filter_by(user_id=user_id, month=month, year=year).first_or_404()
+    report = MonthlyReport.query.filter_by(user_id=user_id, month=month, year=year).first_or_404()
 
     if not payroll or not report:
         flash("❌ Payroll or report not generated", "danger")
@@ -405,13 +418,13 @@ def generate_payslip(user_id, month, year):
 
     generate_payslip_pdf(user, payroll, report, output_path)
 
-    flash("✅ Fiche de paie générée", "success")
+    #flash("✅ Fiche de paie générée", "success")
     return redirect(f"/admin/download-payslip/{filename}")
 
 # Route pour télécharger la fiche de paie PDF
 @admin.route("/download-payslip/<filename>")
 @login_required
-@admin_required
+#@admin_required
 def download_payslip(filename):
     folder = "payslips"
     return send_from_directory(folder, filename, as_attachment=True)
@@ -432,15 +445,15 @@ def manage_users():
         User.email.contains(q) | User.nom.contains(q) | User.prenom.contains(q)
     ).paginate(page=page, per_page=5)
 
-    return render_template('admin/gestion_utilisateur.html', users=users, q=q)
+    return render_template(
+        'admin/gestion_utilisateur.html',
+        users=users,
+        q=q, current_month=datetime.now().month,
+        current_year=datetime.now().year
+ )
 
 
-# Tableau de bord administrateur
-# @admin.route('/admin/dashboard')
-# @login_required
-# @admin_required
-# def dashboard():
-#     return render_template('admin/dashboard.html')
+
 
 @admin.route('/dashboard')
 @login_required
@@ -603,46 +616,118 @@ def reset_password(user_id):
 
 
 # Route to manage timesheet for a specific user
+# @admin.route('/timesheet/<int:user_id>', methods=['GET', 'POST'])
+# @login_required
+# @admin_required
+# def admin_timesheet(user_id):
+#     user = User.query.get_or_404(user_id)
+
+#     now = datetime.now()
+#     month = now.strftime("%B %Y")
+#     year = now.year
+#     month_num = now.month
+
+#     # Nombre de jours dans le mois(28, 30 ou 31)
+#     days_in_month = calendar.monthrange(year, month_num)[1]
+#     todday_day = now.day
+
+#     if request.method == "POST":
+#         # Optional: clear old entries for that month (avoid duplicates)
+#         Timesheet.query.filter(
+#             Timesheet.user_id == user.id,
+#             db.extract('month', Timesheet.date) == month_num,
+#             db.extract('year', Timesheet.date) == year
+#         ).delete()
+
+#         for day in range(1, 32):
+#             for entry_type in ["work", "absence1", "absence2"]:
+#                 value = request.form.get(f"{entry_type}_{day}")
+
+#                 if value and value.strip() != "" and float(value) > 0:
+#                     ts = Timesheet(
+#                         user_id=user.id,
+#                         date=date(year, month_num, day),
+#                         type=entry_type,
+#                         value=float(value),
+#                         project="Projet 1",
+#                         created_by=current_user.id,
+#                         validated=True   # admin = auto-validated
+#                     )
+#                     db.session.add(ts)
+
+#         db.session.commit()
+#         flash("✅ Feuille de temps enregistrée pour l'utilisateur.")
+#         return redirect(url_for('admin.view_user', user_id=user.id))
+
+#     return render_template(
+#         "timesheet.html",
+#         user=user,
+#         month=month
+#     )
+
+
 @admin.route('/timesheet/<int:user_id>', methods=['GET', 'POST'])
 @login_required
 @admin_required
 def admin_timesheet(user_id):
     user = User.query.get_or_404(user_id)
+
     now = datetime.now()
-    month = now.strftime("%B %Y")
     year = now.year
     month_num = now.month
+    month_name = now.strftime("%B %Y")
+
+    # Number of days in current month (28/29/30/31)
+    days_in_month = calendar.monthrange(year, month_num)[1]
+    today_day = now.day
 
     if request.method == "POST":
-        # Optional: clear old entries for that month (avoid duplicates)
+        # Clear existing month data
         Timesheet.query.filter(
             Timesheet.user_id == user.id,
             db.extract('month', Timesheet.date) == month_num,
             db.extract('year', Timesheet.date) == year
         ).delete()
 
-        for day in range(1, 32):
-            for entry_type in ["work", "absence1", "absence2"]:
-                value = request.form.get(f"{entry_type}_{day}")
+        for day in range(1, days_in_month + 1):
 
-                if value and value.strip() != "" and float(value) > 0:
-                    ts = Timesheet(
-                        user_id=user.id,
-                        date=date(year, month_num, day),
-                        type=entry_type,
-                        value=float(value),
-                        project="Projet 1",
-                        created_by=current_user.id,
-                        validated=True   # admin = auto-validated
-                    )
-                    db.session.add(ts)
+            # 🚫 Block future days
+            if day > today_day:
+                continue
+
+            value = request.form.get(f"work_{day}")
+            absence = request.form.get(f"absence_{day}")
+
+            if value and float(value) > 0:
+                db.session.add(Timesheet(
+                    user_id=user.id,
+                    date=date(year, month_num, day),
+                    type="work",
+                    value=float(value),
+                    project="Projet 1",
+                    created_by=current_user.id,
+                    validated=True
+                ))
+
+            if absence and float(absence) > 0:
+                db.session.add(Timesheet(
+                    user_id=user.id,
+                    date=date(year, month_num, day),
+                    type="absence",
+                    value=float(absence),
+                    project=None,
+                    created_by=current_user.id,
+                    validated=True
+                ))
 
         db.session.commit()
-        flash("✅ Feuille de temps enregistrée pour l'utilisateur.")
+        flash("✅ Feuille de temps enregistrée.")
         return redirect(url_for('admin.view_user', user_id=user.id))
 
     return render_template(
         "timesheet.html",
         user=user,
-        month=month
+        month=month_name,
+        days_in_month=days_in_month,
+        today_day=today_day
     )

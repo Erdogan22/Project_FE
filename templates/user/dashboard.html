@@ -1,69 +1,184 @@
 {% extends "base.html" %}
 {% block content %}
 
-<div class="container mt-4">
+<div class="container-fluid px-4 py-4">
 
-  <h4 class="mb-4">📊 Dashboard - {{ month }}</h4>
-
-  <!-- KPI Cards -->
-  <div class="row g-3 mb-4">
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 text-center">
-        <h6>🕒 Heures</h6>
-        <h3>{{ total_hours }}</h3>
-      </div>
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h3 class="fw-bold mb-0">Tableau de bord</h3>
+      <small class="text-muted">{{ month }}</small>
     </div>
-
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 text-center">
-        <h6>❌ Absences</h6>
-        <h3>{{ absences }}</h3>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 text-center">
-        <h6>🏖 Vacances restantes</h6>
-        <h3>{{ vacation_left }}</h3>
-      </div>
-    </div>
-
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 text-center">
-        <h6>💰 Salaire estimé</h6>
-        <h3>{{ estimated_salary }} €</h3>
-      </div>
-    </div>
-    <div class="col-md-3">
-      <div class="card shadow-sm p-3 text-center">
-        <a href="/user/payroll" class="btn btn-outline-success w-100">💴 Mes fiches de paie</a>
-
-      </div>
+    <div>
+      <span class="badge bg-light text-dark shadow-sm px-3 py-2">
+        {{ current_user.prenom }} {{ current_user.nom }}
+      </span>
     </div>
   </div>
-  <!-- Timesheet history -->
-  <div class="card shadow-sm p-3">
-    <h5>🗓 Historique récent</h5>
 
-    <table class="table table-sm mt-3">
-      <tr>
-        <th>Date</th>
-        <th>Type</th>
-        <th>Valeur</th>
-        <th>Projet</th>
-      </tr>
+  <!-- KPI GRID -->
+  <div class="row g-4 mb-4">
 
-      {% for t in timesheets %}
-      <tr>
-        <td>{{ t.date.strftime("%d/%m/%Y") }}</td>
-        <td>{{ t.type }}</td>
-        <td>{{ t.value }}</td>
-        <td>{{ t.project }}</td>
-      </tr>
-      {% endfor %}
-    </table>
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="kpi-icon bg-primary">🕒</div>
+        <div class="kpi-content">
+          <span>Heures travaillées</span>
+          <h2>{{ total_hours }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="kpi-icon bg-danger">❌</div>
+        <div class="kpi-content">
+          <span>Absences</span>
+          <h2>{{ absences }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="kpi-icon bg-warning">🏖</div>
+        <div class="kpi-content">
+          <span>Congés restants</span>
+          <h2>{{ vacation_left }}</h2>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="kpi-icon bg-success">💰</div>
+        <div class="kpi-content">
+          <span>Salaire estimé</span>
+          <h2>{{ estimated_salary }} €</h2>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ACTION PANEL -->
+  <div class="row g-4 mb-4">
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm p-4 h-100">
+        <h5 class="fw-bold mb-3">📄 Paie</h5>
+        <a href="{{ url_for('user.user_payroll') }}" class="btn btn-outline-success w-100 mb-2">💴 Mes fiches de paie</a>
+        <a href="{{ url_for('user.user_payslips') }}" class="btn btn-outline-info w-100">📄 Mes rapports de paie</a>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm p-4 h-100">
+        <h5 class="fw-bold mb-3">🏖 Congés</h5>
+        <a href="{{ url_for('user.user_vacation') }}" class="btn btn-outline-warning w-100 mb-2">📅 Mes congés</a>
+      </div>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card shadow-sm p-4 h-100">
+        <h5 class="fw-bold mb-3">⚙️ Compte</h5>
+        <a href="/user/profile" class="btn btn-outline-primary w-100 mb-2">👤 Mon profil</a>
+        <a href="/user/change-password" class="btn btn-outline-dark w-100">🔐 Sécurité</a>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- HISTORY -->
+  <div class="card shadow-sm p-4">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+      <h5 class="fw-bold mb-0">🗓 Activité récente</h5>
+      <span class="badge bg-light text-muted">30 derniers jours</span>
+    </div>
+
+    <div class="table-responsive">
+      <table class="table table-hover align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Date</th>
+            <th>Type</th>
+            <th>Valeur</th>
+            <th>Projet</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for t in timesheets %}
+          <tr>
+            <td>{{ t.date.strftime("%d/%m/%Y") }}</td>
+            <td>
+              <span class="badge 
+                {% if t.type == 'work' %}bg-success
+                {% elif 'absence' in t.type %}bg-danger
+                {% else %}bg-secondary{% endif %}">
+                {{ t.type }}
+              </span>
+            </td>
+            <td>{{ t.value }}</td>
+            <td>{{ t.project }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
   </div>
 
 </div>
+
+<style>
+.kpi-card{
+  display:flex;
+  align-items:center;
+  gap:15px;
+  padding:20px;
+  border-radius:12px;
+  border:none;
+}
+
+.kpi-icon{
+  width:55px;
+  height:55px;
+  border-radius:12px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:24px;
+  color:white;
+}
+
+.kpi-content span{
+  font-size:13px;
+  color:#6c757d;
+}
+
+.kpi-content h2{
+  margin:0;
+  font-weight:700;
+}
+
+.card{
+  border-radius:14px;
+}
+
+.table thead th{
+  font-size:13px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+
+.table td{
+  font-size:14px;
+}
+
+.btn{
+  border-radius:8px;
+}
+</style>
 
 {% endblock %}

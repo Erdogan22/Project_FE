@@ -23,10 +23,14 @@
 <tr>
   <td>{{ p.month }}/{{ p.year }}</td>
   <td>{{ "%.2f"|format(p.net_salary) }}</td>
-  <td>
-    <a href="/admin/download-payslip/payslip_{{ p.user_id }}{{ p.month }}{{ p.year }}.pdf"
-       class="btn btn-sm btn-outline-primary">
-       📥 Télécharger
+   <td>
+   <!-- <a href="{{ url_for('admin.download_payslip', filename=('payslip_' ~ p.user_id ~ p.month ~ p.year ~ '.pdf')) }}"
+     class="btn btn-sm btn-outline-primary">
+     📥 Télécharger
+   </a> -->
+   <a href="/admin/generate-payslip/{{ p.user_id }}/{{ p.month }}/{{ p.year }}"
+        class="btn btn-outline-dark">
+      🧾 PDF
     </a>
   </td>
 </tr>

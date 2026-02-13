@@ -30,7 +30,7 @@
             <td>{{ user.email }}</td>
             <td>{{ user.role }}</td>
             <td>
-                {% if user.role != 'admin' %}
+                <!-- {% if user.role != 'admin' %}
                 <a href="{{ url_for('admin.admin_timesheet', user_id=user.id) }}" class="btn btn-sm btn-outline-primary">
                     🕒 Timesheet
                 </a>
@@ -38,9 +38,16 @@
                 <a href="{{ url_for('admin.generate_payroll_route', user_id=user.id) }}" class="btn btn-sm btn-outline-success">
                     💰 Générer paie
                 </a>
-                {% endif %}
+                <a href="/admin/report/{{  user.id }}" class="btn btn-sm btn-outline-info">
+                    📊 Rapport
+                </a>
+                <a href="/admin/generate-payslip/{{ user.id }}/{{ current_month }}/{{ current_year }}"
+                    class="btn btn-sm btn-outline-primary">
+                    🧾 PDF
+                </a>
+                {% endif %} -->
 
-                {% if user.role != 'admin' %}
+                <!-- {% if user.role != 'admin' %}
                 <form method="POST" enctype="multipart/form-data"
                       action="{{ url_for('admin.delete_user', user_id=user.id) }}"
                       style="display:inline;"
@@ -58,7 +65,7 @@
                         Réinitialiser le mot de passe
                     </button>
                 </form>
-                {% endif %}
+                {% endif %} -->
             </td>
         </tr>
         {% endfor %}

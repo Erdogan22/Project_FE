@@ -594,7 +594,7 @@ def delete_user(user_id):
     return redirect(url_for('admin.dashboard'))
 
 # Reinitialiser le mot de passe d'un utilisateur par l'administrateur
-@admin.route('/reset-password/<int:user_id>', methods=['POST'])
+@admin.route('/reset-password/<int:user_id>', methods=['POST', 'GET'])
 @login_required
 @admin_required
 def reset_password(user_id):
